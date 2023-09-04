@@ -1,5 +1,4 @@
 use chrono::Utc;
-use diesel::PgConnection;
 use validator::Validate;
 
 use crate::UserModel;
@@ -7,16 +6,16 @@ use crate::repositories::register::RegistrationRepo;
 use crate::DTORequestRegister;
 use crate::UsecaseError;
 
-pub struct RegistrationUsecase {
-    repo: Box<dyn RegistrationRepo> 
+pub struct RegistrationUsecase<T> {
+    repo: Box<dyn RegistrationRepo<DriverConn = T>> 
 }
 
-impl RegistrationUsecase {
-    pub fn new(repo: Box<dyn RegistrationRepo>) -> Self {
+impl<T> RegistrationUsecase<T> {
+    pub fn new(repo: Box<dyn RegistrationRepo<DriverConn = T>>) -> Self {
         RegistrationUsecase { repo }
     }
     
-    pub fn register(&self, conn: &mut PgConnection, payload: DTORequestRegister) -> Result<i64, UsecaseError> {
+    pub fn register(&self, conn: &mut T, payload: DTORequestRegister) -> Result<i64, UsecaseError> {
         payload
             .validate()
             .map_err(|err| UsecaseError::ValidationError(err))?; 

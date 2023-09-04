@@ -6,7 +6,7 @@ use crate::{DTORequestRegister, DTOBaseResponse, RegistrationRepoImpl, Registrat
 #[post("/register")]
 async fn handler(payload: web::Json<DTORequestRegister>, dbpool: web::Data<Pool<ConnectionManager<PgConnection>>>) -> impl Responder {
     let dbconn = &mut dbpool.clone().get().unwrap();
-    let usecase = RegistrationUsecase::new(Box::new(RegistrationRepoImpl{}));
+    let usecase = RegistrationUsecase::new(Box::new(RegistrationRepoImpl));
     let out = usecase.register(dbconn, payload.clone());
 
     match out {

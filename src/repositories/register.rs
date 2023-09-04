@@ -5,13 +5,15 @@ use crate::schema::users::dsl::*;
 use crate::{RepositoryError, UserModel};
 
 pub trait RegistrationRepo {
-    fn save(&self, dbconn: &mut PgConnection, model: &UserModel::NewUser) -> Result<i64, RepositoryError>;
+    type DriverConn;
+    fn save(&self, dbconn: &mut Self::DriverConn, model: &UserModel::NewUser) -> Result<i64, RepositoryError>;
 }
 
-pub struct RegistrationRepoImpl {}
+pub struct RegistrationRepoImpl;
 
 impl RegistrationRepo for RegistrationRepoImpl {
-    fn save(&self, conn: &mut PgConnection, model: &UserModel::NewUser) -> Result<i64, RepositoryError> {
+    type DriverConn = PgConnection;
+    fn save(&self, conn: &mut Self::DriverConn, model: &UserModel::NewUser) -> Result<i64, RepositoryError> {
         diesel::insert_into(users::table)
             .values(model)
             .returning(id)
