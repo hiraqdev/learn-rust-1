@@ -5,7 +5,7 @@ use crate::{DTORequestRegister, DTOBaseResponse, AppState};
 #[post("/register")]
 async fn handler(payload: web::Json<DTORequestRegister>, state: web::Data<AppState>) -> impl Responder {
     let dbconn = &mut state.dbconn.clone().get().unwrap();
-    let usecase = state.usecase.clone();
+    let usecase = state.register.clone();
     let out = usecase.register(dbconn, payload.clone());
 
     match out {

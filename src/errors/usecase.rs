@@ -7,5 +7,7 @@ pub enum UsecaseError {
     #[error("Error validation: {0}")]
     ValidationError(#[from] ValidationErrors),
     #[error("Error repository: {0}")]
-    RepoError(#[from] RepositoryError)
+    RepoError(#[from] RepositoryError),
+    #[error("Error invalid data: {0}")]
+    InvalidData(String)
 }
