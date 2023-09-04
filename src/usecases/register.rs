@@ -7,11 +7,11 @@ use crate::DTORequestRegister;
 use crate::UsecaseError;
 
 pub struct RegistrationUsecase<T> {
-    repo: Box<dyn RegistrationRepo<DriverConn = T>> 
+    repo: Box<dyn RegistrationRepo<DriverConn = T> + Send + Sync> 
 }
 
 impl<T> RegistrationUsecase<T> {
-    pub fn new(repo: Box<dyn RegistrationRepo<DriverConn = T>>) -> Self {
+    pub fn new(repo: Box<dyn RegistrationRepo<DriverConn = T> + Send + Sync>) -> Self {
         RegistrationUsecase { repo }
     }
     

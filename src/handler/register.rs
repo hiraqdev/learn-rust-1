@@ -1,12 +1,11 @@
 use actix_web::{web, post, Responder, HttpResponse};
-use diesel::{r2d2::{Pool, ConnectionManager}, PgConnection};
 
-use crate::{DTORequestRegister, DTOBaseResponse, RegistrationRepoImpl, RegistrationUsecase};
+use crate::{DTORequestRegister, DTOBaseResponse, AppState};
 
 #[post("/register")]
-async fn handler(payload: web::Json<DTORequestRegister>, dbpool: web::Data<Pool<ConnectionManager<PgConnection>>>) -> impl Responder {
-    let dbconn = &mut dbpool.clone().get().unwrap();
-    let usecase = RegistrationUsecase::new(Box::new(RegistrationRepoImpl));
+async fn handler(payload: web::Json<DTORequestRegister>, state: web::Data<AppState>) -> impl Responder {
+    let dbconn = &mut state.dbconn.clone().get().unwrap();
+    let usecase = state.usecase.clone();
     let out = usecase.register(dbconn, payload.clone());
 
     match out {
