@@ -1,5 +1,6 @@
 use chrono::Utc;
 use validator::Validate;
+use bcrypt::{DEFAULT_COST, hash};
 
 use crate::UserModel;
 use crate::repositories::register::RegistrationRepo;
@@ -20,10 +21,11 @@ impl<T> RegistrationUsecase<T> {
             .validate()
             .map_err(|err| UsecaseError::ValidationError(err))?; 
 
+        let password_hashed = hash(payload.password.as_ref().unwrap(), DEFAULT_COST).unwrap();
         let new_user = UserModel::NewUser{
             username: payload.username.as_ref().unwrap(),
             email: payload.email.as_str(),
-            password: payload.password.as_ref().unwrap(),
+            password: password_hashed.as_str(),
             created_at: &Utc::now(),
             updated_at: &Utc::now()
         };
